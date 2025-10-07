@@ -74,7 +74,7 @@ fiveDBManager$saveModifiers(file.path(dirname(script_path),'5db_modifiers.r.txt'
 # Selecting what we need to find
 
 user_process_types <- fiveDBManager$selectProcessTypes(c('Migration'))
-user_parameters <- fiveDBManager$selectParameters(c('kbase'))
+user_parameters <- fiveDBManager$selectParameters(c('kbase', 'Kmax'))
 user_cell_types <- fiveDBManager$selectCellTypes(c())
 
 user_stimulateds <- fiveDBManager$selectStimulated(c())
@@ -123,7 +123,7 @@ summary_stats <- aggregate(
   by = list(CellType = query_data_5db[[cell_type_var]]), 
   FUN = function(x) {
     c(
-      mean_value = mean(x, na.rm = TRUE),
+      median_value = median(x, na.rm = TRUE),
       min_value = min(x, na.rm = TRUE),
       max_value = max(x, na.rm = TRUE)
     )
@@ -134,18 +134,18 @@ summary_stats <- aggregate(
 summary_stats <- do.call(data.frame, summary_stats)
 
 # Rename columns for ggplot
-colnames(summary_stats) <- c("CellType", "mean_value", "min_value", "max_value")
+colnames(summary_stats) <- c("CellType", "median_value", "min_value", "max_value")  
 
-# Create the plot (no changes to the code)
-print(ggplot(summary_stats, aes(x = CellType, y = mean_value)) +
+# Create the plot with updated labels
+print(ggplot(summary_stats, aes(x = CellType, y = median_value)) + 
         geom_point(size = 3, color = "blue") +
         geom_errorbar(aes(ymin = min_value, ymax = max_value), 
                       width = 0.2, color = "red") +
         labs(
           title = "Parameter Values by Cell Type",
           x = "Cell Type",
-          y = "Parameter Value (mean with min/max range)",
-          caption = paste("Parameter:", user_parameters)
+          y = "Parameter Value (median with min/max range)",  
+          caption = paste("Parameter:", paste(user_parameters, collapse = ","))
         ) +
         theme_minimal() +
         theme(
@@ -153,4 +153,3 @@ print(ggplot(summary_stats, aes(x = CellType, y = mean_value)) +
           plot.title = element_text(hjust = 0.5)
         )
 )
-

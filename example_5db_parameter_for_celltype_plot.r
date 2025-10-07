@@ -74,7 +74,7 @@ fiveDBManager$saveModifiers(file.path(dirname(script_path),'5db_modifiers.r.txt'
 # Selecting what we need to find
 
 user_process_types <- fiveDBManager$selectProcessTypes(c('Secretion'))
-user_parameters <- fiveDBManager$selectParameters(c('kbase'))
+user_parameters <- fiveDBManager$selectParameters(c('kbase', 'Kmax'))
 user_cell_types <- fiveDBManager$selectCellTypes(c('Macrophages'))
 
 user_stimulateds <- fiveDBManager$selectStimulated(c())
